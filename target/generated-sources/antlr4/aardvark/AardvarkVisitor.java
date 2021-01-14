@@ -109,23 +109,23 @@ public interface AardvarkVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitValue(AardvarkParser.ValueContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link AardvarkParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpression(AardvarkParser.ExpressionContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link AardvarkParser#returnExpression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitReturnExpression(AardvarkParser.ReturnExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link AardvarkParser#scope}.
+	 * Visit a parse tree produced by {@link AardvarkParser#for_statement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitScope(AardvarkParser.ScopeContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link AardvarkParser#if_statement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIf_statement(AardvarkParser.If_statementContext ctx);
+	T visitFor_statement(AardvarkParser.For_statementContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link AardvarkParser#declaration}.
 	 * @param ctx the parse tree
@@ -139,12 +139,6 @@ public interface AardvarkVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStatement(AardvarkParser.StatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link AardvarkParser#statementNoSemi}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStatementNoSemi(AardvarkParser.StatementNoSemiContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link AardvarkParser#structDefinition}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -157,35 +151,17 @@ public interface AardvarkVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStructInstantiation(AardvarkParser.StructInstantiationContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link AardvarkParser#lessThan}.
+	 * Visit a parse tree produced by {@link AardvarkParser#structImplementation}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitLessThan(AardvarkParser.LessThanContext ctx);
+	T visitStructImplementation(AardvarkParser.StructImplementationContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link AardvarkParser#greaterThan}.
+	 * Visit a parse tree produced by {@link AardvarkParser#predicateOperator}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitGreaterThan(AardvarkParser.GreaterThanContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link AardvarkParser#leq}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLeq(AardvarkParser.LeqContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link AardvarkParser#geq}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGeq(AardvarkParser.GeqContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link AardvarkParser#eq}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitEq(AardvarkParser.EqContext ctx);
+	T visitPredicateOperator(AardvarkParser.PredicateOperatorContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link AardvarkParser#predicate}.
 	 * @param ctx the parse tree

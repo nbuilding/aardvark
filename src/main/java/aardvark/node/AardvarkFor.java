@@ -1,16 +1,17 @@
 package aardvark.node;
 
 import aardvark.local.AardvarkStackFrame;
+import aardvark.node.primitive.AardvarkBooleanNode;
 
 public class AardvarkFor implements AardvarkStatementNode {
     AardvarkStatementNode[] nodes;
     AardvarkStackFrame frame;
     AardvarkVariableDeclaration declaration;
     AardvarkExpressionNode predicate;
-    AardvarkStackFrame eachTime;
+    AardvarkStatementNode eachTime;
 
-    public AardvarkFor(AardvarkStackFrame frame, AardvarkVariableDeclaration declaration, AardvarkExpressionNode predicate, AardvarkStackFrame eachTime, AardvarkStatementNode[] nodes) {
-        this.frame = frame;
+    public AardvarkFor(AardvarkStackFrame frame, AardvarkVariableDeclaration declaration, AardvarkExpressionNode predicate, AardvarkStatementNode eachTime, AardvarkStatementNode[] nodes) {
+        this.frame = frame.createChildFrame();
         this.nodes = nodes;
         this.declaration = declaration;
         this.predicate = predicate;
@@ -24,6 +25,11 @@ public class AardvarkFor implements AardvarkStatementNode {
 
     @Override
     public void executeVoid(AardvarkStackFrame frame) {
-
+        while(((AardvarkBooleanNode) predicate.executeGeneric(frame)).value) {
+            for (AardvarkStatementNode node : nodes) {
+                node.executeVoid(frame);
+            }
+            eachTime.executeVoid(frame);
+        }
     }
 }

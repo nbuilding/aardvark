@@ -7,7 +7,7 @@ compilationUnit
     :
         importDeclaration*
         moduleDeclaration?
-        (declaration | structDefinition)*
+        (declaration SEMI)*
     ;
 
 moduleDeclaration: MODULE moduleName SEMI;
@@ -21,12 +21,12 @@ declarationFunction:
 (PUBLIC)? Identifier
 functionDeclarationArguments
 typeAnnotation?
-LBRACE statement* RBRACE;
+LBRACE (statement SEMI)* RBRACE;
 functionDeclarationArguments: (LBRACKET ((variableName typeAnnotation) (COMMA (variableName typeAnnotation))*)? RBRACKET);
 
-declarationVariable: (PUBLIC | MUTABLE)? variableName typeAnnotation? ('=' value)?;
+declarationVariable: (PUBLIC | MUTABLE)? variableName typeAnnotation? ('=' expression)?;
 
-functionCallParameters: LBRACKET (value (COMMA value)*)? RBRACKET;
+functionCallParameters: LBRACKET (expression (COMMA expression)*)? RBRACKET;
 functionCall: Identifier functionCallParameters;
 
 importName: Identifier | STAR;
@@ -36,14 +36,13 @@ type: Identifier;
 variableName: Identifier;
 typeAnnotation: COLON type;
 string : '"' ~('"')* '"' ;
-value: string | variableName | functionCall | INTEGER | scope | structInstantiation;
-returnExpression: 'return' value;
+value: string | variableName | functionCall | INTEGER | structInstantiation;
+expression: value | predicate;
+returnExpression: 'return' expression;
 
-scope: if_statement;
-if_statement: 'for' LBRACKET declarationVariable SEMI predicate SEMI statementNoSemi RBRACKET LBRACE statement* RBRACE;
-declaration: (declarationVariable | declarationFunction) SEMI;
-statement: (declaration | (functionCall | returnExpression | scope) SEMI);
-statementNoSemi: (declaration | functionCall | returnExpression | scope);
+for_statement: 'for' LBRACKET declarationVariable SEMI expression SEMI statement RBRACKET LBRACE (statement SEMI)* RBRACE;
+declaration: (declarationVariable | declarationFunction | structDefinition | structImplementation) ;
+statement: (declaration | (functionCall | returnExpression | for_statement));
 
 structDefinition: 'struct' Identifier
 (
@@ -51,16 +50,13 @@ structDefinition: 'struct' Identifier
     ((PUBLIC | MUTABLE)? variableName typeAnnotation)?
     (',' ((PUBLIC | MUTABLE)? variableName typeAnnotation))*
     RBRACE
-)? SEMI;
+)?;
 
-structInstantiation: Identifier LBRACE (variableName '=' value)? (',' variableName '=' value)* RBRACE;
+structInstantiation: Identifier LBRACE (variableName '=' expression)? (',' variableName '=' expression)* RBRACE;
+structImplementation: 'impl' Identifier typeAnnotation LBRACE (declarationFunction SEMI)* RBRACE SEMI;
 
-lessThan: value '<' value;
-greaterThan: value '>' value;
-leq: value '<=' value;
-geq: value '>=' value;
-eq: value '==' value;
-predicate: lessThan | greaterThan | leq | geq | eq;
+predicateOperator: '<' | '>' | '<=' | '>=' | '==' | '!=';
+predicate: value predicateOperator value;
 
 
 // lexer shit

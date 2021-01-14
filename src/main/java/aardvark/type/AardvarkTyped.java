@@ -1,5 +1,10 @@
 package aardvark.type;
 
+import aardvark.local.AardvarkStackFrame;
+import aardvark.local.AardvarkTrait;
+
+import java.util.List;
+
 public interface AardvarkTyped {
     public boolean canBe(Object value);
 
@@ -11,6 +16,11 @@ public interface AardvarkTyped {
                 singleton = new LongType();
             }
             return singleton;
+        }
+
+        @Override
+        public String toString() {
+            return "l64";
         }
 
         @Override
@@ -31,9 +41,14 @@ public interface AardvarkTyped {
         }
 
         @Override
+        public String toString() {
+            return "i32";
+        }
+
+        @Override
         public boolean canBe(Object value) {
             Class klazz = value.getClass();
-            return klazz.equals(Integer.class) || klazz.equals(LongType.class);
+            return klazz.equals(Integer.class) || klazz.equals(LongType.class) || klazz.equals(AardvarkStackFrame.builtinFrame.accessTrait("eq").getClass());
         }
     }
 
@@ -45,6 +60,11 @@ public interface AardvarkTyped {
                 singleton = new BooleanType();
             }
             return singleton;
+        }
+
+        @Override
+        public String toString() {
+            return "boolean";
         }
 
         @Override
@@ -68,4 +88,5 @@ public interface AardvarkTyped {
             return true;
         }
     }
+
 }

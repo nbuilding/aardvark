@@ -5,9 +5,17 @@ import aardvark.type.AardvarkTyped;
 import java.util.List;
 
 public class Shape {
+    List<String> paramNames;
+    List<AardvarkTyped> paramTypes;
+
     public Shape(List<String> paramNames, List<AardvarkTyped> paramTypes) {
         this.paramNames = paramNames;
         this.paramTypes = paramTypes;
+    }
+
+    @Override
+    public String toString() {
+        return paramTypes.toString();
     }
 
     public List<String> getParamNames() {
@@ -18,16 +26,15 @@ public class Shape {
         return paramTypes;
     }
 
-    List<String> paramNames;
-    List<AardvarkTyped> paramTypes;
-
     public boolean doesConformToShape(List<AardvarkTyped> inputs) {
-    for (int i = 0; i < this.paramTypes.size(); i++) {
-      if (!(inputs.get(i).canBe(this.paramTypes.get(i))
-          || this.paramTypes.get(i).equals(inputs.get(i))))
-        return false;
+        if (inputs.size() != this.paramTypes.size())
+            return false;
+        for (int i = 0; i < this.paramTypes.size(); i++) {
+            if (!(inputs.get(i).canBe(this.paramTypes.get(i))
+                  || this.paramTypes.get(i).equals(inputs.get(i))))
+                return false;
 
-    }
+        }
 
         return true;
     }

@@ -5,7 +5,7 @@ import aardvark.node.AardvarkExpressionNode;
 import aardvark.type.AardvarkTyped;
 
 public class AardvarkBooleanNode implements AardvarkExpressionNode {
-    private boolean value;
+    public boolean value;
 
     public AardvarkBooleanNode(boolean value) {
         this.value = value;

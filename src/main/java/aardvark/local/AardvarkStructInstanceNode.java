@@ -1,8 +1,10 @@
 package aardvark.local;
 
+import aardvark.AardvarkException;
 import aardvark.node.AardvarkExpressionNode;
 import aardvark.type.AardvarkTyped;
 
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.Function;
@@ -16,6 +18,11 @@ public class AardvarkStructInstanceNode implements AardvarkExpressionNode {
     public AardvarkStructInstanceNode(Map<String, AardvarkExpressionNode> values, AardvarkStructNode struct) {
         this.values = new WeakHashMap<>(values);
         this.struct = struct;
+
+        List<AardvarkTyped> shape =
+                values.values().stream().map(AardvarkExpressionNode::getType).collect(Collectors.toList());
+        if(!struct.shape.doesConformToShape(shape))
+            throw new AardvarkException("Struct %s expected shape %s, but you gave %s", struct.name, struct.shape.toString(), shape.toString());
     }
 
     public AardvarkStructInstanceNode executeGeneric(AardvarkStackFrame frame) {

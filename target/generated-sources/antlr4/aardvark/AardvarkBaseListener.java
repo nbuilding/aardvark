@@ -210,6 +210,18 @@ public class AardvarkBaseListener implements AardvarkListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterExpression(AardvarkParser.ExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitExpression(AardvarkParser.ExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterReturnExpression(AardvarkParser.ReturnExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -222,25 +234,13 @@ public class AardvarkBaseListener implements AardvarkListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterScope(AardvarkParser.ScopeContext ctx) { }
+	@Override public void enterFor_statement(AardvarkParser.For_statementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitScope(AardvarkParser.ScopeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterIf_statement(AardvarkParser.If_statementContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitIf_statement(AardvarkParser.If_statementContext ctx) { }
+	@Override public void exitFor_statement(AardvarkParser.For_statementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -270,18 +270,6 @@ public class AardvarkBaseListener implements AardvarkListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterStatementNoSemi(AardvarkParser.StatementNoSemiContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitStatementNoSemi(AardvarkParser.StatementNoSemiContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterStructDefinition(AardvarkParser.StructDefinitionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -306,61 +294,25 @@ public class AardvarkBaseListener implements AardvarkListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterLessThan(AardvarkParser.LessThanContext ctx) { }
+	@Override public void enterStructImplementation(AardvarkParser.StructImplementationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitLessThan(AardvarkParser.LessThanContext ctx) { }
+	@Override public void exitStructImplementation(AardvarkParser.StructImplementationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGreaterThan(AardvarkParser.GreaterThanContext ctx) { }
+	@Override public void enterPredicateOperator(AardvarkParser.PredicateOperatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGreaterThan(AardvarkParser.GreaterThanContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterLeq(AardvarkParser.LeqContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitLeq(AardvarkParser.LeqContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterGeq(AardvarkParser.GeqContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitGeq(AardvarkParser.GeqContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterEq(AardvarkParser.EqContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitEq(AardvarkParser.EqContext ctx) { }
+	@Override public void exitPredicateOperator(AardvarkParser.PredicateOperatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

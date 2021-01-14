@@ -14,23 +14,29 @@ public class AardvarkFunctionNode {
     AardvarkStackFrame frame;
     Shape shape;
     AardvarkTyped type;
+    String name;
 
-    public AardvarkFunctionNode(AardvarkStackFrame frame, AardvarkStatementNode[] nodes, Shape parameters) {
+    public AardvarkFunctionNode(AardvarkStackFrame frame, String name, AardvarkStatementNode[] nodes,
+                                Shape parameters) {
         this.frame = frame;
         this.nodes = nodes;
         this.shape = parameters;
+        this.name = name;
     }
 
-    public AardvarkFunctionNode(AardvarkStackFrame frame, AardvarkStatementNode[] nodes, AardvarkTyped type,
+    public AardvarkFunctionNode(AardvarkStackFrame frame, String name, AardvarkStatementNode[] nodes,
+                                AardvarkTyped type,
                                 Shape parameters) {
         this.frame = frame;
         this.nodes = nodes;
         this.shape = parameters;
         this.type = type;
+        this.name = name;
     }
 
     public static void addBuiltin(String functionName, AardvarkExpressionNode expressionNode) {
-        AardvarkStackFrame.builtinFrame.defineFunction(functionName, new AardvarkFunctionNode(AardvarkStackFrame.builtinFrame,
+        AardvarkStackFrame.builtinFrame.defineFunction(functionName,
+                new AardvarkFunctionNode(AardvarkStackFrame.builtinFrame, functionName,
                 new AardvarkExpressionNode[]{expressionNode}, new Shape.AnyShape(Collections.singletonList(
                 "args"), Collections.singletonList(AardvarkTyped.AnyType.getInstance()))));
     }
@@ -43,6 +49,10 @@ public class AardvarkFunctionNode {
         return this.shape;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public AardvarkTyped getType() {
         return type;
     }
@@ -52,11 +62,11 @@ public class AardvarkFunctionNode {
         List<AardvarkTyped> ourTypes = shape.getParamTypes();
 
         for (int i = 0; i < sigTypes.size(); i++) {
-            if(!sigTypes.get(i).canBe(ourTypes.get(i)))
+            if (!sigTypes.get(i).canBe(ourTypes.get(i)))
                 return false;
         }
 
-        if(!signature.getReturnType().canBe(this.getType()))
+        if (!signature.getReturnType().canBe(this.getType()))
             return false;
         return true;
     }

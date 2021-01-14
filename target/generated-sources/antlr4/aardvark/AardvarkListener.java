@@ -170,6 +170,16 @@ public interface AardvarkListener extends ParseTreeListener {
 	 */
 	void exitValue(AardvarkParser.ValueContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link AardvarkParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpression(AardvarkParser.ExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AardvarkParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpression(AardvarkParser.ExpressionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link AardvarkParser#returnExpression}.
 	 * @param ctx the parse tree
 	 */
@@ -180,25 +190,15 @@ public interface AardvarkListener extends ParseTreeListener {
 	 */
 	void exitReturnExpression(AardvarkParser.ReturnExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link AardvarkParser#scope}.
+	 * Enter a parse tree produced by {@link AardvarkParser#for_statement}.
 	 * @param ctx the parse tree
 	 */
-	void enterScope(AardvarkParser.ScopeContext ctx);
+	void enterFor_statement(AardvarkParser.For_statementContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link AardvarkParser#scope}.
+	 * Exit a parse tree produced by {@link AardvarkParser#for_statement}.
 	 * @param ctx the parse tree
 	 */
-	void exitScope(AardvarkParser.ScopeContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link AardvarkParser#if_statement}.
-	 * @param ctx the parse tree
-	 */
-	void enterIf_statement(AardvarkParser.If_statementContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link AardvarkParser#if_statement}.
-	 * @param ctx the parse tree
-	 */
-	void exitIf_statement(AardvarkParser.If_statementContext ctx);
+	void exitFor_statement(AardvarkParser.For_statementContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link AardvarkParser#declaration}.
 	 * @param ctx the parse tree
@@ -220,16 +220,6 @@ public interface AardvarkListener extends ParseTreeListener {
 	 */
 	void exitStatement(AardvarkParser.StatementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link AardvarkParser#statementNoSemi}.
-	 * @param ctx the parse tree
-	 */
-	void enterStatementNoSemi(AardvarkParser.StatementNoSemiContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link AardvarkParser#statementNoSemi}.
-	 * @param ctx the parse tree
-	 */
-	void exitStatementNoSemi(AardvarkParser.StatementNoSemiContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link AardvarkParser#structDefinition}.
 	 * @param ctx the parse tree
 	 */
@@ -250,55 +240,25 @@ public interface AardvarkListener extends ParseTreeListener {
 	 */
 	void exitStructInstantiation(AardvarkParser.StructInstantiationContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link AardvarkParser#lessThan}.
+	 * Enter a parse tree produced by {@link AardvarkParser#structImplementation}.
 	 * @param ctx the parse tree
 	 */
-	void enterLessThan(AardvarkParser.LessThanContext ctx);
+	void enterStructImplementation(AardvarkParser.StructImplementationContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link AardvarkParser#lessThan}.
+	 * Exit a parse tree produced by {@link AardvarkParser#structImplementation}.
 	 * @param ctx the parse tree
 	 */
-	void exitLessThan(AardvarkParser.LessThanContext ctx);
+	void exitStructImplementation(AardvarkParser.StructImplementationContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link AardvarkParser#greaterThan}.
+	 * Enter a parse tree produced by {@link AardvarkParser#predicateOperator}.
 	 * @param ctx the parse tree
 	 */
-	void enterGreaterThan(AardvarkParser.GreaterThanContext ctx);
+	void enterPredicateOperator(AardvarkParser.PredicateOperatorContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link AardvarkParser#greaterThan}.
+	 * Exit a parse tree produced by {@link AardvarkParser#predicateOperator}.
 	 * @param ctx the parse tree
 	 */
-	void exitGreaterThan(AardvarkParser.GreaterThanContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link AardvarkParser#leq}.
-	 * @param ctx the parse tree
-	 */
-	void enterLeq(AardvarkParser.LeqContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link AardvarkParser#leq}.
-	 * @param ctx the parse tree
-	 */
-	void exitLeq(AardvarkParser.LeqContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link AardvarkParser#geq}.
-	 * @param ctx the parse tree
-	 */
-	void enterGeq(AardvarkParser.GeqContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link AardvarkParser#geq}.
-	 * @param ctx the parse tree
-	 */
-	void exitGeq(AardvarkParser.GeqContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link AardvarkParser#eq}.
-	 * @param ctx the parse tree
-	 */
-	void enterEq(AardvarkParser.EqContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link AardvarkParser#eq}.
-	 * @param ctx the parse tree
-	 */
-	void exitEq(AardvarkParser.EqContext ctx);
+	void exitPredicateOperator(AardvarkParser.PredicateOperatorContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link AardvarkParser#predicate}.
 	 * @param ctx the parse tree

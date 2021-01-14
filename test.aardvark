@@ -12,5 +12,5 @@ main() {
     item1 = 3,
     item2 = 4
   };
-  println(lol(uwu));
+  println(3 == 4);
 };

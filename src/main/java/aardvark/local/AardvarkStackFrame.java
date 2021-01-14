@@ -6,8 +6,7 @@ import aardvark.node.AardvarkFunctionNode;
 import aardvark.node.AardvarkVariableAccessNode;
 import aardvark.type.AardvarkTyped;
 
-import java.util.HashMap;
-import java.util.WeakHashMap;
+import java.util.*;
 
 public class AardvarkStackFrame {
     public static AardvarkStackFrame builtinFrame = new AardvarkStackFrame();
@@ -20,14 +19,17 @@ public class AardvarkStackFrame {
     private WeakHashMap<String, AardvarkFunctionNode> functions;
     private WeakHashMap<String, AardvarkStructNode> structs;
     private WeakHashMap<String, AardvarkTrait> traits;
+    public WeakHashMap<String, Map<String, AardvarkFunctionNode>> otherImpls;
     private AardvarkStackFrame parent;
+    private AardvarkTyped pointerToThisType;
+
+    public void setPointerToThisType(AardvarkTyped pointerToThisType) {
+        this.pointerToThisType = pointerToThisType;
+    }
 
     private AardvarkStackFrame(AardvarkStackFrame parent) {
+        this();
         this.parent = parent;
-        this.locals = new WeakHashMap<>();
-        this.functions = new WeakHashMap<>();
-        this.structs = new WeakHashMap<>();
-        this.traits = new WeakHashMap<>();
     }
 
     private AardvarkStackFrame() {
@@ -35,6 +37,7 @@ public class AardvarkStackFrame {
         this.functions = new WeakHashMap<>();
         this.structs = new WeakHashMap<>();
         this.traits = new WeakHashMap<>();
+        this.otherImpls = new WeakHashMap<>();
     }
 
     public static AardvarkStackFrame createRootFrame() {
@@ -95,6 +98,9 @@ public class AardvarkStackFrame {
     }
 
     public AardvarkTyped accessType(String name) {
+        if(name.equals("Self") && this.pointerToThisType != null)
+            return this.pointerToThisType;
+
         try {
             return accessStruct(name);
         } catch (AardvarkException ignored) { }
@@ -121,8 +127,8 @@ public class AardvarkStackFrame {
         functions.put(name, function);
     }
 
-    public void implementTrait(AardvarkStructNode node, AardvarkTrait trait,
-                               HashMap<String, AardvarkFunctionNode> functions) {
+    public void implementTraitForStruct(AardvarkStructNode node, AardvarkTrait trait,
+                                        Map<String, AardvarkFunctionNode> functions) {
         if (node.implementedTraits.contains(trait))
             throw new AardvarkException("Cannot reimplement trait");
         if (!trait.canBe(functions))
@@ -132,6 +138,23 @@ public class AardvarkStackFrame {
 
         node.frame.functions.putAll(functions);
         node.setImplements(trait);
+    }
+
+    public void giveSingleFnTraitToOther(String name, String traitName, AardvarkFunctionNode functionNode) {
+        this.otherImpls.computeIfAbsent(name, k -> new HashMap<>());
+        this.otherImpls.get(name).put(traitName, functionNode);
+    }
+
+    public AardvarkFunctionNode getOtherImpl(String traitName, String functionName) {
+        var fromThisScope = this.otherImpls.get(traitName);
+        if(fromThisScope != null && fromThisScope.get(functionName) != null) return fromThisScope.get(functionName);
+        else if(parent != null) return parent.getOtherImpl(traitName, functionName);
+        else return null;
+    }
+
+
+    public void defineTrait(String name, AardvarkTrait trait) {
+        this.traits.put(name, trait);
     }
 
     public void makePlaceholders(Shape shape) { // this is VERY janky, and is used to we can typecheck functions and

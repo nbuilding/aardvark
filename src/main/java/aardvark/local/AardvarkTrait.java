@@ -15,6 +15,10 @@ public class AardvarkTrait implements AardvarkTyped {
         this.frame = frame;
     }
 
+    public AardvarkTrait(AardvarkStackFrame frame) {
+        this.frame = frame;
+    }
+
     @Override
     public boolean canBe(Object value) {
         List<AardvarkFunctionNode> functionsCmp = (List<AardvarkFunctionNode>) value;
@@ -24,5 +28,9 @@ public class AardvarkTrait implements AardvarkTyped {
         }
 
         return true;
+    }
+
+    public void setFunctions(List<FunctionSignature> functions) {
+        this.functions = functions;
     }
 }

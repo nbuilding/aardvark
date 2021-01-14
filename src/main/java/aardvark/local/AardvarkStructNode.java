@@ -9,12 +9,14 @@ public class AardvarkStructNode implements AardvarkTyped {
     public Shape shape;
     ArrayList<AardvarkTrait> implementedTraits;
     public AardvarkStackFrame frame;
+    public String name;
 
-    public AardvarkStructNode(AardvarkStackFrame frame, Shape shape) {
+    public AardvarkStructNode(AardvarkStackFrame frame, Shape shape, String name) {
         this.shape = shape;
         this.implementedTraits = new ArrayList<>();
         this.frame = frame;
         this.frame.makePlaceholders(this.shape);
+        this.name = name;
     }
 
     public void setImplements(AardvarkTrait trait) {
