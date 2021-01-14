@@ -1,0 +1,16 @@
+struct testStruct {
+ item1: i32,
+ item2: i32
+};
+
+lol(arg1: testStruct): testStruct {
+    return arg1;
+};
+
+main() {
+  uwu = testStruct {
+    item1 = 3,
+    item2 = 4
+  };
+  println(lol(uwu));
+};
