@@ -28,16 +28,16 @@ public class AardvarkLanguageListener {
         AardvarkLanguageListener listener = new AardvarkLanguageListener();
         listener.scopes.push(AardvarkStackFrame.createRootFrame());
 
-           var compilationUnit = parser.compilationUnit();
+        var compilationUnit = parser.compilationUnit();
 
-          compilationUnit.declaration().forEach(listener::visitDeclaration);
+        compilationUnit.declaration().forEach(listener::visitDeclaration);
 
-             new AardvarkInvokeNode(listener.scopes.peek().accessFunction("main")).executeGeneric(listener.scopes
-             .peek());
+        new AardvarkInvokeNode(listener.scopes.peek().accessFunction("main")).executeGeneric(listener.scopes
+                .peek());
 
-     //   var result = new AardvarkInvokeNode(AardvarkStackFrame.builtinFrame.otherImpls.get("i32").get("eq"),
-       //         new AardvarkIntNode(1), new AardvarkIntNode(1)).executeGeneric(listener.scopes.peek());
-       // System.out.println(result);
+        //   var result = new AardvarkInvokeNode(AardvarkStackFrame.builtinFrame.otherImpls.get("i32").get("eq"),
+        //         new AardvarkIntNode(1), new AardvarkIntNode(1)).executeGeneric(listener.scopes.peek());
+        // System.out.println(result);
     }
 
     public static <K, V> Map<K, V> zipToMap(List<K> keys, List<V> values) {
@@ -87,47 +87,119 @@ public class AardvarkLanguageListener {
         return null;
     }
 
-    public AardvarkExpressionNode visitVariableRef(AardvarkParser.VariableNameContext ctx) {
-        return new AardvarkVariableAccessNode(ctx.Identifier().getText(),
-                scopes.peek().accessVariable(ctx.Identifier().getText()).getType());
+
+    private String findJoinedName(AardvarkParser.VariableRefContext ctx) {
+        return ctx.Identifier().stream().map(TerminalNode::getText).collect(Collectors.joining("."));
     }
 
-    public AardvarkVariableDeclaration visitAssignmentDecVariable(AardvarkParser.DeclarationVariableContext ctx) {
-        String variableName = ctx.variableName().Identifier().getText();
+    public AardvarkStatementNode visitAssignmentDecVariable(AardvarkParser.DeclarationVariableContext ctx) {
         AardvarkExpressionNode variableValue = this.visitExpression(ctx.expression());
+        if (ctx.variableName() != null) {
+            String variableName = ctx.variableName().Identifier().getText();
 
-        AardvarkTyped type;
-        if (ctx.typeAnnotation() != null) {
-            type = AardvarkTypeFactory.getType(ctx.typeAnnotation().type().getText(), scopes.peek());
-            assert variableValue.getType().canBe(type);
-        } else
-            type = variableValue.getType();
+            if (scopes.peek().hasVariable(variableName)) {
+                if (ctx.typeAnnotation() != null)
+                    throw new AardvarkException("Cannot change the type of a previously declared variable %s",
+                            variableName);
+                if (variableValue.getType().canBe(scopes.peek().accessVariable(variableName)))
+                    throw new AardvarkException("Incompatible types for variable %s: you gave me %s, but the " +
+                                                "variable's " +
+                                                "type is %s", variableName, variableValue.getType().toString(),
+                            scopes.peek().accessVariable(variableName).getType().toString());
 
-        scopes.peek().createVariable(variableName, null, variableValue.getType());
+                return new AardvarkVariableMutation(variableName, variableValue);
+            }
 
-        return new AardvarkVariableDeclaration(variableName, variableValue);
+
+            AardvarkTyped type;
+            if (ctx.typeAnnotation() != null) {
+                type = AardvarkTypeFactory.getType(ctx.typeAnnotation().type().getText(), scopes.peek());
+                assert variableValue.getType().canBe(type);
+            } else
+                type = variableValue.getType();
+
+            scopes.peek().createVariable(variableName, variableValue, variableValue.getType());
+
+
+            return new AardvarkVariableDeclaration(variableName, variableValue);
+        } else if (ctx.variableRef() != null) {
+            String variableName = findJoinedName(ctx.variableRef());
+            if (!scopes.peek().hasVariable(variableName)) {
+                throw new AardvarkException("Variable %s is not found, and is a member of a struct so we can't " +
+                                            "declare it.", variableName);
+            }
+            if (ctx.typeAnnotation() != null)
+                throw new AardvarkException("Cannot change the type of a previously declared variable %s which " +
+                                            "does not belong to us.",
+                        variableName);
+            if (variableValue.getType().canBe(scopes.peek().accessVariable(variableName)))
+                throw new AardvarkException("Incompatible types for variable %s: you gave me %s, but the " +
+                                            "variable's " +
+                                            "type is %s", variableName, variableValue.getType().toString(),
+                        scopes.peek().accessVariable(variableName).getType().toString());
+
+            return new AardvarkVariableMutation(variableName, variableValue);
+        }
+        throw new AardvarkException("Internal error.");
     }
 
     public AardvarkExpressionNode visitPredicate(AardvarkParser.PredicateContext ctx) {
         String operator = ctx.predicateOperator().getText();
         AardvarkExpressionNode left = visitValue(ctx.value(0)), right = visitValue(ctx.value(1));
-        if(operator.equals("=="))
-            return new AardvarkInvokeNode(scopes.peek().getOtherImpl(left.getType().toString(), "eq"), left, right);
-        return null;
+
+        return switch (operator) {
+            case "==" -> new AardvarkInvokeNode(scopes.peek().getOtherImpl(left.getType().toString(), "eq"), left,
+                    right);
+            case "!=" -> new AardvarkInvokeNode(scopes.peek().getOtherImpl(left.getType().toString(), "neq"), left,
+                    right);
+            case "<" -> new AardvarkInvokeNode(scopes.peek().getOtherImpl(left.getType().toString(), "le"), left,
+                    right);
+            case ">" -> new AardvarkInvokeNode(scopes.peek().getOtherImpl(left.getType().toString(), "ge"), left,
+                    right);
+            case "<=" -> new AardvarkInvokeNode(scopes.peek().getOtherImpl(left.getType().toString(), "leq"), left,
+                    right);
+            case ">=" -> new AardvarkInvokeNode(scopes.peek().getOtherImpl(left.getType().toString(), "geq"), left,
+                    right);
+            default -> throw new IllegalStateException("Unexpected value: " + operator);
+        };
     }
 
     public AardvarkExpressionNode visitExpression(AardvarkParser.ExpressionContext ctx) {
-        if(ctx.value() != null) return visitValue(ctx.value());
-        else if(ctx.predicate() != null) return visitPredicate(ctx.predicate());
+        if (ctx.value() != null)
+            return visitValue(ctx.value());
+        else if (ctx.predicate() != null)
+            return visitPredicate(ctx.predicate());
+        else if (ctx.infixOperation() != null)
+            return visitInfix(ctx.infixOperation());
         return null;
+    }
+
+    private AardvarkExpressionNode visitInfix(AardvarkParser.InfixOperationContext ctx) {
+        String operator = ctx.infixOperator().getText();
+        AardvarkExpressionNode left = visitValue(ctx.value(0)), right = visitValue(ctx.value(1));
+
+        return switch (operator) {
+            case "+" -> new AardvarkInvokeNode(scopes.peek().getOtherImpl(left.getType().toString(), "add"), left,
+                    right);
+            case "-" -> new AardvarkInvokeNode(scopes.peek().getOtherImpl(left.getType().toString(), "sub"), left,
+                    right);
+            case "*" -> new AardvarkInvokeNode(scopes.peek().getOtherImpl(left.getType().toString(), "mul"), left,
+                    right);
+            case "/" -> new AardvarkInvokeNode(scopes.peek().getOtherImpl(left.getType().toString(), "div"), left,
+                    right);
+
+            default -> throw new IllegalStateException("Unexpected value: " + operator);
+        };
     }
 
     public AardvarkExpressionNode visitValue(AardvarkParser.ValueContext ctx) { // TODO
         if (ctx.functionCall() != null)
             return this.visitFunctionCall(ctx.functionCall());
         else if (ctx.variableName() != null)
-            return this.visitVariableRef(ctx.variableName());
-        else if (ctx.INTEGER() != null)
+            return scopes.peek().accessVariable(ctx.variableName().Identifier().getText());
+        else if (ctx.variableRef() != null) {
+            return scopes.peek().accessVariable(findJoinedName(ctx.variableRef()));
+        } else if (ctx.INTEGER() != null)
             return new AardvarkIntNode(Integer.parseInt(ctx.INTEGER().getText()));
         else if (ctx.structInstantiation() != null)
             return this.visitStructInstantiation(ctx.structInstantiation());
@@ -137,8 +209,10 @@ public class AardvarkLanguageListener {
         return null;
     }
 
-    public AardvarkStructInstanceNode visitStructInstantiation(AardvarkParser.StructInstantiationContext ctx) {
+    public AardvarkStructInstanceNode visitStructInstantiation(boolean isPlaceholder,
+                                                               AardvarkParser.StructInstantiationContext ctx) {
         String name = ctx.Identifier().getText();
+
         List<String> variableNames = ctx.variableName().stream()
                 .map(AardvarkParser.VariableNameContext::Identifier)
                 .map(TerminalNode::getText)
@@ -147,8 +221,12 @@ public class AardvarkLanguageListener {
                 .map(this::visitExpression)
                 .collect(toList());
 
-        return new AardvarkStructInstanceNode(zipToMap(variableNames, variableValues),
+        return new AardvarkStructInstanceNode(isPlaceholder, zipToMap(variableNames, variableValues),
                 scopes.peek().accessStruct(name));
+    }
+
+    public AardvarkStructInstanceNode visitStructInstantiation(AardvarkParser.StructInstantiationContext ctx) {
+        return this.visitStructInstantiation(false, ctx);
     }
 
     public AardvarkStatementNode visitDeclaration(AardvarkParser.DeclarationContext ctx) {
@@ -160,7 +238,34 @@ public class AardvarkLanguageListener {
             this.visitStructDefinition(ctx.structDefinition());
         else if (ctx.structImplementation() != null)
             this.visitStructImplementation(ctx.structImplementation());
+        else if (ctx.contractDefinition() != null)
+            this.visitContractDefinition(ctx.contractDefinition());
         return null;
+    }
+
+    private void visitContractDefinition(AardvarkParser.ContractDefinitionContext ctx) {
+        List<FunctionSignature> expressions =
+                ctx.declarationFunctionStub().stream().map(this::visitFunctionStub).collect(toList());
+        List<String> names = expressions.stream().map(FunctionSignature::getName).collect(toList());
+        scopes.peek().defineTrait(ctx.Identifier().getText(), new AardvarkTrait(scopes.peek().createChildFrame(),
+                zipToMap(names, expressions)))
+        ;
+    }
+
+    private FunctionSignature visitFunctionStub(AardvarkParser.DeclarationFunctionStubContext ctx) {
+        String functionName = ctx.Identifier().getSymbol().getText();
+        List<String> variableNames =
+                ctx.functionDeclarationArguments().variableName().stream().map(AardvarkParser.VariableNameContext::Identifier).map(TerminalNode::getText).collect(toList());
+        List<AardvarkTyped> types =
+                ctx.functionDeclarationArguments().typeAnnotation().stream()
+                        .map(AardvarkParser.TypeAnnotationContext::type)
+                        .map(AardvarkParser.TypeContext::Identifier)
+                        .map(TerminalNode::getText)
+                        .map(n -> AardvarkTypeFactory.getType(n, scopes.peek()))
+                        .collect(toList());
+
+        return new FunctionSignature(types, scopes.peek().accessType(ctx.typeAnnotation().type().getText()),
+                ctx.Identifier().getText());
     }
 
     private void visitStructImplementation(AardvarkParser.StructImplementationContext ctx) {
@@ -175,6 +280,7 @@ public class AardvarkLanguageListener {
                 ctx.declarationFunction().stream().map(this::parseDeclarationFunction).collect(toMap(AardvarkFunctionNode::getName, Function.identity()));
         scopes.peek().implementTraitForStruct(struct, trait, functionNodes);
     }
+
 
     public void visitStructDefinition(AardvarkParser.StructDefinitionContext ctx) {
         String name = ctx.Identifier().getText();
@@ -211,4 +317,6 @@ public class AardvarkLanguageListener {
                             .toArray(AardvarkStatementNode[]::new));
         return null;
     }
+
+
 }

@@ -31,6 +31,12 @@ public interface AardvarkVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitImportDeclaration(AardvarkParser.ImportDeclarationContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link AardvarkParser#declarationFunctionStub}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeclarationFunctionStub(AardvarkParser.DeclarationFunctionStubContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link AardvarkParser#declarationFunction}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -84,6 +90,12 @@ public interface AardvarkVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitType(AardvarkParser.TypeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AardvarkParser#variableRef}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVariableRef(AardvarkParser.VariableRefContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link AardvarkParser#variableName}.
 	 * @param ctx the parse tree
@@ -157,6 +169,12 @@ public interface AardvarkVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStructImplementation(AardvarkParser.StructImplementationContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link AardvarkParser#contractDefinition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitContractDefinition(AardvarkParser.ContractDefinitionContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link AardvarkParser#predicateOperator}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -168,4 +186,16 @@ public interface AardvarkVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitPredicate(AardvarkParser.PredicateContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AardvarkParser#infixOperator}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInfixOperator(AardvarkParser.InfixOperatorContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AardvarkParser#infixOperation}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInfixOperation(AardvarkParser.InfixOperationContext ctx);
 }

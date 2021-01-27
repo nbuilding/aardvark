@@ -31,4 +31,9 @@ public class AardvarkStructNode implements AardvarkTyped {
     public boolean canBe(Object value) {
         return implementedTraits.contains(value);
     }
+
+    @Override
+    public boolean isAlgebraic() {
+        return true;
+    }
 }

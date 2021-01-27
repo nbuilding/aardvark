@@ -1,13 +1,15 @@
 package aardvark.local;
 
+import aardvark.node.AardvarkExpressionNode;
 import aardvark.type.AardvarkTyped;
 
-public class AardvarkLocal {
-    public AardvarkTyped getType() {
-        return type;
-    }
+import java.util.Random;
 
+public class AardvarkLocal implements AardvarkExpressionNode {
     AardvarkTyped type;
+    String name;
+    Object value;
+    int id = new Random().nextInt();
 
     public AardvarkLocal(String name, Object value, AardvarkTyped type) {
         this.name = name;
@@ -15,9 +17,25 @@ public class AardvarkLocal {
         this.type = type;
     }
 
-    String name;
-    public Object value;
-    int references = 0;
+    @Override
+    public Object executeGeneric(AardvarkStackFrame frame) {
+        System.out.printf("(exec) name: %s, id: %d, value: %s\n", name, id, this.value);
+        if (value instanceof AardvarkLocal)
+            return ((AardvarkLocal) value).executeGeneric(frame);
+        return value;
+    }
+
+    public AardvarkTyped getType() {
+        return type;
+    }
+
+    public void setValue(Object newValue) {
+        if (value instanceof AardvarkLocal)
+            ((AardvarkLocal) value).setValue(newValue);
+        this.value = newValue;
+        System.out.printf("(setval) name: %s id: %d, value: %s\n", name, id, this.value);
+
+    }
 
     // TODO implement drop trait
     public void drop() {
@@ -28,6 +46,7 @@ public class AardvarkLocal {
         super.finalize();
         System.out.println("dropped " + name);
     }
+
 
     @Override
     public String toString() {

@@ -15,7 +15,10 @@ importDeclaration:
 IMPORT fileName (HASH importName)? SEMI
 ;
 
-
+declarationFunctionStub:
+                         (PUBLIC)? Identifier
+                         functionDeclarationArguments
+                         typeAnnotation?;
 
 declarationFunction:
 (PUBLIC)? Identifier
@@ -24,7 +27,7 @@ typeAnnotation?
 LBRACE (statement SEMI)* RBRACE;
 functionDeclarationArguments: (LBRACKET ((variableName typeAnnotation) (COMMA (variableName typeAnnotation))*)? RBRACKET);
 
-declarationVariable: (PUBLIC | MUTABLE)? variableName typeAnnotation? ('=' expression)?;
+declarationVariable: (((PUBLIC | MUTABLE)? variableName typeAnnotation?) | variableRef)  ('=' expression)?;
 
 functionCallParameters: LBRACKET (expression (COMMA expression)*)? RBRACKET;
 functionCall: Identifier functionCallParameters;
@@ -34,14 +37,15 @@ moduleName: Identifier;
 fileName: Identifier (SLASH Identifier)*;
 type: Identifier;
 variableName: Identifier;
+variableRef: ( Identifier '.')* Identifier;
 typeAnnotation: COLON type;
 string : '"' ~('"')* '"' ;
-value: string | variableName | functionCall | INTEGER | structInstantiation;
-expression: value | predicate;
+value: string | variableRef | variableName | functionCall | INTEGER | structInstantiation;
+expression: value | predicate | infixOperation;
 returnExpression: 'return' expression;
 
 for_statement: 'for' LBRACKET declarationVariable SEMI expression SEMI statement RBRACKET LBRACE (statement SEMI)* RBRACE;
-declaration: (declarationVariable | declarationFunction | structDefinition | structImplementation) ;
+declaration: (declarationVariable | declarationFunction | structDefinition | structImplementation | contractDefinition) ;
 statement: (declaration | (functionCall | returnExpression | for_statement));
 
 structDefinition: 'struct' Identifier
@@ -53,10 +57,15 @@ structDefinition: 'struct' Identifier
 )?;
 
 structInstantiation: Identifier LBRACE (variableName '=' expression)? (',' variableName '=' expression)* RBRACE;
-structImplementation: 'impl' Identifier typeAnnotation LBRACE (declarationFunction SEMI)* RBRACE SEMI;
+structImplementation: 'impl' Identifier typeAnnotation LBRACE (declarationFunction SEMI)* RBRACE;
+
+contractDefinition: 'contract' Identifier LBRACE (declarationFunctionStub SEMI)* RBRACE;
 
 predicateOperator: '<' | '>' | '<=' | '>=' | '==' | '!=';
 predicate: value predicateOperator value;
+
+infixOperator: '+' | '-' | '*' | '^' | '/';
+infixOperation: value infixOperator value;
 
 
 // lexer shit

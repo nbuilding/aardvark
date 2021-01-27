@@ -3,6 +3,16 @@ struct testStruct {
  item2: i32
 };
 
+contract hello {
+    test(arg1: i32): i32;
+};
+
+impl testStruct: hello {
+    test(arg1: i32): i32 {
+        return 3+arg1;
+    };
+};
+
 lol(arg1: testStruct): testStruct {
     return arg1;
 };
@@ -12,5 +22,6 @@ main() {
     item1 = 3,
     item2 = 4
   };
-  println(3 == 4);
+
+  println(uwu.item1 + uwu.item2 + 32);
 };

@@ -31,8 +31,10 @@ public class AardvarkInvokeNode implements AardvarkExpressionNode {
         var parameterTypes = functionNode.getShape().getParamTypes();
 
         for (int i = 0; i < parameterNames.size(); i++) {
-            frame.createVariable(parameterNames.get(i), parameters[i].executeGeneric(callerFrame), parameterTypes.get(i));
+            Object value = parameters[i].executeGeneric(callerFrame);
+            frame.createVariable(parameterNames.get(i), value, parameterTypes.get(i));
         }
+
 
         for (AardvarkStatementNode node : functionNode.nodes) {
             if(node.getClass() == AardvarkReturnNode.class) {

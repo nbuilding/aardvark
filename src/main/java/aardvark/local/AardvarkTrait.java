@@ -4,13 +4,15 @@ import aardvark.node.AardvarkFunctionNode;
 import aardvark.type.AardvarkTyped;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AardvarkTrait implements AardvarkTyped {
 
-    List<FunctionSignature> functions;
+    Map<String, FunctionSignature> functions;
     AardvarkStackFrame frame;
 
-    public AardvarkTrait(AardvarkStackFrame frame, List<FunctionSignature> functions) {
+    public AardvarkTrait(AardvarkStackFrame frame, Map<String, FunctionSignature> functions) {
         this.functions = functions;
         this.frame = frame;
     }
@@ -21,16 +23,21 @@ public class AardvarkTrait implements AardvarkTyped {
 
     @Override
     public boolean canBe(Object value) {
-        List<AardvarkFunctionNode> functionsCmp = (List<AardvarkFunctionNode>) value;
-        for (int i = 0; i < functions.size(); i++) {
-            if(!functionsCmp.get(i).canBe(functions.get(i)))
-                return false;
-        }
+        Map<String, AardvarkFunctionNode>  functionsCmp = (Map<String, AardvarkFunctionNode>) value;
 
-        return true;
+        AtomicBoolean ok = new AtomicBoolean(true);
+        functions.forEach((name, func) -> {
+            if(!functionsCmp.containsKey(name) || !functionsCmp.get(name).canBe(func))
+                ok.set(false);
+        });
+
+        if(functionsCmp.size() != functions.size())
+            ok.set(false);
+
+        return ok.get();
     }
 
-    public void setFunctions(List<FunctionSignature> functions) {
+    public void setFunctions(Map<String, FunctionSignature> functions) {
         this.functions = functions;
     }
 }

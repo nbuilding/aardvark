@@ -5,6 +5,7 @@ import aardvark.local.FunctionSignature;
 import aardvark.local.Shape;
 import aardvark.type.AardvarkTyped;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -62,12 +63,21 @@ public class AardvarkFunctionNode {
         List<AardvarkTyped> ourTypes = shape.getParamTypes();
 
         for (int i = 0; i < sigTypes.size(); i++) {
-            if (!sigTypes.get(i).canBe(ourTypes.get(i)))
+            if (!sigTypes.get(i).canBe(ourTypes.get(i))) {
                 return false;
+            }
         }
 
-        if (!signature.getReturnType().canBe(this.getType()))
-            return false;
-        return true;
+        return signature.getReturnType() == null && this.getType() == null || signature.getReturnType().canBe(this.getType());
+    }
+
+    @Override
+    public String toString() {
+        return "AardvarkFunctionNode{" +
+               ", frame=" + frame +
+               ", shape=" + shape +
+               ", type=" + type +
+               ", name='" + name + '\'' +
+               '}';
     }
 }

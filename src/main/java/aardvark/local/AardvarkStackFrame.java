@@ -15,7 +15,7 @@ public class AardvarkStackFrame {
         AardvarkBuiltin.init();
     }
 
-    private WeakHashMap<String, AardvarkLocal> locals;
+    public WeakHashMap<String, AardvarkLocal> locals;
     private WeakHashMap<String, AardvarkFunctionNode> functions;
     private WeakHashMap<String, AardvarkStructNode> structs;
     private WeakHashMap<String, AardvarkTrait> traits;
@@ -45,20 +45,36 @@ public class AardvarkStackFrame {
     }
 
     public AardvarkLocal accessVariable(String name) {
+        if(name.contains(".")) {
+            List<String> derefPath = new ArrayList<>(List.of(name.split("\\.")));
+            System.out.println(this);
+
+            String scopeName = derefPath.get(0);
+
+            derefPath.remove(0);
+            return ((AardvarkStructInstanceNode)this.locals.get(scopeName).value).referenceVariable(derefPath.get(0));
+        }
+
         AardvarkLocal localFromThisStackFrame = locals.get(name);
 
         if (localFromThisStackFrame != null) {
             assert name.equals(localFromThisStackFrame.name);
 
-            if (localFromThisStackFrame.value instanceof AardvarkVariableAccessNode) {
-                return ((AardvarkVariableAccessNode) localFromThisStackFrame.value).executeGeneric(this);
-            }
             return localFromThisStackFrame;
         } else if (parent != null) {
             return parent.accessVariable(name);
         } else {
             throw new AardvarkException("Could not access variable %s", name);
         }
+    }
+
+    public boolean hasVariable(String name) {
+        if(locals.get(name) != null)
+            return true;
+        else if(parent != null)
+            return parent.hasVariable(name);
+        else
+            return false;
     }
 
     public AardvarkFunctionNode accessFunction(String name) {
@@ -113,7 +129,16 @@ public class AardvarkStackFrame {
     }
 
     public void createVariable(String name, Object value, AardvarkTyped type) {
+        if(hasVariable(name))
+            throw new AardvarkException("Internal error: variable %s is already defined.", name);
         locals.put(name, new AardvarkLocal(name, value, type));
+    }
+
+    public void createOrReset(String name, Object value, AardvarkTyped type) {
+        if(this.hasVariable(name))
+            this.accessVariable(name).setValue(value);
+        else
+            this.createVariable(name, value, type);
     }
 
     public void createStruct(String name, AardvarkStructNode structNode) {
@@ -123,12 +148,12 @@ public class AardvarkStackFrame {
     public void defineFunction(String name, AardvarkFunctionNode function) {
         if (functions.containsKey(name))
             throw new AardvarkException("Function %s already defined", name);
-
         functions.put(name, function);
     }
 
     public void implementTraitForStruct(AardvarkStructNode node, AardvarkTrait trait,
                                         Map<String, AardvarkFunctionNode> functions) {
+
         if (node.implementedTraits.contains(trait))
             throw new AardvarkException("Cannot reimplement trait");
         if (!trait.canBe(functions))
@@ -169,5 +194,12 @@ public class AardvarkStackFrame {
 
     public AardvarkStackFrame createChildFrame() {
         return new AardvarkStackFrame(this);
+    }
+
+    @Override
+    public String toString() {
+        return parent == null ? "" : (parent.toString() + " ---->") + "AardvarkStackFrame{" +
+               "locals=" + locals +
+               '}';
     }
 }

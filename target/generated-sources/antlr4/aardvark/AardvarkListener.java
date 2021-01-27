@@ -40,6 +40,16 @@ public interface AardvarkListener extends ParseTreeListener {
 	 */
 	void exitImportDeclaration(AardvarkParser.ImportDeclarationContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link AardvarkParser#declarationFunctionStub}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeclarationFunctionStub(AardvarkParser.DeclarationFunctionStubContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AardvarkParser#declarationFunctionStub}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeclarationFunctionStub(AardvarkParser.DeclarationFunctionStubContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link AardvarkParser#declarationFunction}.
 	 * @param ctx the parse tree
 	 */
@@ -129,6 +139,16 @@ public interface AardvarkListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitType(AardvarkParser.TypeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link AardvarkParser#variableRef}.
+	 * @param ctx the parse tree
+	 */
+	void enterVariableRef(AardvarkParser.VariableRefContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AardvarkParser#variableRef}.
+	 * @param ctx the parse tree
+	 */
+	void exitVariableRef(AardvarkParser.VariableRefContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link AardvarkParser#variableName}.
 	 * @param ctx the parse tree
@@ -250,6 +270,16 @@ public interface AardvarkListener extends ParseTreeListener {
 	 */
 	void exitStructImplementation(AardvarkParser.StructImplementationContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link AardvarkParser#contractDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void enterContractDefinition(AardvarkParser.ContractDefinitionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AardvarkParser#contractDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void exitContractDefinition(AardvarkParser.ContractDefinitionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link AardvarkParser#predicateOperator}.
 	 * @param ctx the parse tree
 	 */
@@ -269,4 +299,24 @@ public interface AardvarkListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitPredicate(AardvarkParser.PredicateContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link AardvarkParser#infixOperator}.
+	 * @param ctx the parse tree
+	 */
+	void enterInfixOperator(AardvarkParser.InfixOperatorContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AardvarkParser#infixOperator}.
+	 * @param ctx the parse tree
+	 */
+	void exitInfixOperator(AardvarkParser.InfixOperatorContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link AardvarkParser#infixOperation}.
+	 * @param ctx the parse tree
+	 */
+	void enterInfixOperation(AardvarkParser.InfixOperationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AardvarkParser#infixOperation}.
+	 * @param ctx the parse tree
+	 */
+	void exitInfixOperation(AardvarkParser.InfixOperationContext ctx);
 }

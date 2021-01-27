@@ -54,6 +54,18 @@ public class AardvarkBaseListener implements AardvarkListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterDeclarationFunctionStub(AardvarkParser.DeclarationFunctionStubContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDeclarationFunctionStub(AardvarkParser.DeclarationFunctionStubContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterDeclarationFunction(AardvarkParser.DeclarationFunctionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -157,6 +169,18 @@ public class AardvarkBaseListener implements AardvarkListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitType(AardvarkParser.TypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterVariableRef(AardvarkParser.VariableRefContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVariableRef(AardvarkParser.VariableRefContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -306,6 +330,18 @@ public class AardvarkBaseListener implements AardvarkListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterContractDefinition(AardvarkParser.ContractDefinitionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitContractDefinition(AardvarkParser.ContractDefinitionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterPredicateOperator(AardvarkParser.PredicateOperatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -325,6 +361,30 @@ public class AardvarkBaseListener implements AardvarkListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitPredicate(AardvarkParser.PredicateContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterInfixOperator(AardvarkParser.InfixOperatorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitInfixOperator(AardvarkParser.InfixOperatorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterInfixOperation(AardvarkParser.InfixOperationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitInfixOperation(AardvarkParser.InfixOperationContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

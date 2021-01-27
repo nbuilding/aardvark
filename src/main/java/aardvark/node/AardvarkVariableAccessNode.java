@@ -1,6 +1,5 @@
 package aardvark.node;
 
-import aardvark.local.AardvarkLocal;
 import aardvark.local.AardvarkStackFrame;
 import aardvark.type.AardvarkTyped;
 
@@ -10,11 +9,11 @@ public class AardvarkVariableAccessNode implements AardvarkExpressionNode {
         this.type = type;
     }
 
-    private String varName;
+    private final String varName;
     AardvarkTyped type;
 
     @Override
-    public AardvarkLocal executeGeneric(AardvarkStackFrame frame) {
+    public Object executeGeneric(AardvarkStackFrame frame) {
         return frame.accessVariable(varName);
     }
 

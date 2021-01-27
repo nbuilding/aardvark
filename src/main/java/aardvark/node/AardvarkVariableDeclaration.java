@@ -16,6 +16,8 @@ public class AardvarkVariableDeclaration implements AardvarkStatementNode {
 
     @Override
     public void executeVoid(AardvarkStackFrame frame) {
-        frame.createVariable(variableName, value.executeGeneric(frame), type);
+        System.out.println("AardvarkVariableDeclaration#executeVoid: " + frame);
+        frame.createOrReset(variableName, value.executeGeneric(frame), type);
+        System.out.println("AardvarkVariableDeclaration#executeVoid: " + frame);
     }
 }

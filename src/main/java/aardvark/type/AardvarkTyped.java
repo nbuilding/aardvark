@@ -7,6 +7,9 @@ import java.util.List;
 
 public interface AardvarkTyped {
     public boolean canBe(Object value);
+    public default boolean isAlgebraic() {
+        return false;
+    }
 
     final class LongType implements AardvarkTyped {
         private static LongType singleton;
@@ -48,7 +51,7 @@ public interface AardvarkTyped {
         @Override
         public boolean canBe(Object value) {
             Class klazz = value.getClass();
-            return klazz.equals(Integer.class) || klazz.equals(LongType.class) || klazz.equals(AardvarkStackFrame.builtinFrame.accessTrait("eq").getClass());
+            return klazz.equals(getClass()) || klazz.equals(Integer.class) || klazz.equals(LongType.class) || klazz.equals(AardvarkStackFrame.builtinFrame.accessTrait("eq").getClass());
         }
     }
 
@@ -88,5 +91,6 @@ public interface AardvarkTyped {
             return true;
         }
     }
+
 
 }
