@@ -1,6 +1,7 @@
 package aardvark.node;
 
 import aardvark.AardvarkException;
+import aardvark.local.AardvarkLocal;
 import aardvark.local.AardvarkStackFrame;
 import aardvark.type.AardvarkTyped;
 
@@ -31,7 +32,7 @@ public class AardvarkInvokeNode implements AardvarkExpressionNode {
         var parameterTypes = functionNode.getShape().getParamTypes();
 
         for (int i = 0; i < parameterNames.size(); i++) {
-            Object value = parameters[i].executeGeneric(callerFrame);
+            Object value = parameters[i] instanceof AardvarkLocal ? parameters[i] : parameters[i].executeGeneric(frame);
             frame.createVariable(parameterNames.get(i), value, parameterTypes.get(i));
         }
 

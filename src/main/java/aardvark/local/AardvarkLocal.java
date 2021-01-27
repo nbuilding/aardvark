@@ -19,7 +19,6 @@ public class AardvarkLocal implements AardvarkExpressionNode {
 
     @Override
     public Object executeGeneric(AardvarkStackFrame frame) {
-        System.out.printf("(exec) name: %s, id: %d, value: %s\n", name, id, this.value);
         if (value instanceof AardvarkLocal)
             return ((AardvarkLocal) value).executeGeneric(frame);
         return value;
@@ -33,7 +32,6 @@ public class AardvarkLocal implements AardvarkExpressionNode {
         if (value instanceof AardvarkLocal)
             ((AardvarkLocal) value).setValue(newValue);
         this.value = newValue;
-        System.out.printf("(setval) name: %s id: %d, value: %s\n", name, id, this.value);
 
     }
 
